@@ -204,6 +204,8 @@ const AddCredits = async (req, res) => {
   try {
     const qry = req.query;
 
+    console.log(qry);
+
     if (
       qry.User === undefined ||
       qry.User === "" ||
@@ -262,4 +264,5 @@ module.exports = {
   UpdateUser,
   ChangeStatusUser,
   Login,
+  AddCredits,
 };

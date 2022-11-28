@@ -7,6 +7,7 @@ const {
   GetUser,
   UpdateUser,
   Login,
+  AddCredits,
 } = require("./users.controller");
 
 Router.post("", CreateUser);
@@ -15,6 +16,6 @@ Router.get("", GetAllUsers);
 Router.put("/:_id", UpdateUser);
 Router.patch("/:_id", ChangeStatusUser);
 Router.post("/login", Login);
-Router.post("/add-credits");
+Router.post("/add-credits", AddCredits);
 
 module.exports = Router;

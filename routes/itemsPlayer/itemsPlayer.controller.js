@@ -21,7 +21,7 @@ const GetItemsOfPlayer = async (req, res) => {
 
     return res
       .send({
-        success: false,
+        success: true,
         message: "Items of Player",
         data: listItems,
       })
@@ -98,14 +98,20 @@ const SetPurchased = async (req, res) => {
     }
 
     let newItemToPlayer;
-    if (userP.Credits > itemP.Price) {
-      newItemToPlayer = await ItemsPlayer.create({
-        Player: userP._id,
-        Item: itemP.Item,
-        isPurchased: true,
-        isSelected: false,
+    if (userP.Credits < itemP.Price) {
+      return res.send({
+        success: false,
+        message: "Not enough credits!",
+        data: false,
       });
     }
+
+    newItemToPlayer = await ItemsPlayer.create({
+      Player: userP._id,
+      Item: itemP.Item,
+      isPurchased: true,
+      isSelected: false,
+    });
 
     res
       .send({
@@ -158,13 +164,6 @@ const SetSelected = async (req, res) => {
       },
       { new: false }
     );
-
-    if (oldItemSelected === null)
-      return res.send({
-        success: false,
-        message: "Last one selected item cannot be updated",
-        data: false,
-      });
 
     const itemToUpd = await ItemsPlayer.findOneAndUpdate(
       {
@@ -257,7 +256,7 @@ const GetSelected = async (req, res) => {
 
     const sList = await ItemsPlayer.find({
       Player: qry.User,
-      isPurchased: true,
+      isSelected: true,
     })
       .lean()
       .exec();
