@@ -18,9 +18,18 @@ const GetAllUsers = async (req, res) => {
 
 const GetUser = async (req, res) => {
   try {
-    const _idUser = req.params._id;
+    const qry = req.query;
 
-    const user = await User.findById({ _id: _idUser }).lean().exec();
+    if (qry.User === undefined || qry.User === "")
+      return res
+        .send({
+          success: false,
+          message: "User is mandatory",
+          data: null,
+        })
+        .end();
+
+    const user = await User.findById({ _id: qry.User }).lean().exec();
 
     res.send({
       success: true,
@@ -66,7 +75,11 @@ const CreateUser = async (req, res) => {
       })
       .end();
   } catch (error) {
-    console.log(error);
+    res.send({
+      success: false,
+      message: error.message,
+      data: error,
+    });
   }
 };
 
@@ -117,7 +130,11 @@ const UpdateUser = async (req, res) => {
       })
       .end();
   } catch (error) {
-    console.log(error);
+    res.send({
+      success: false,
+      message: error.message,
+      data: error,
+    });
   }
 };
 
@@ -149,7 +166,11 @@ const ChangeStatusUser = async (req, res) => {
       })
       .end();
   } catch (error) {
-    console.log(error);
+    res.send({
+      success: false,
+      message: error.message,
+      data: error,
+    });
   }
 };
 
@@ -196,7 +217,11 @@ const Login = async (req, res) => {
         .end();
     }
   } catch (error) {
-    console.log(error);
+    res.send({
+      success: false,
+      message: error.message,
+      data: error,
+    });
   }
 };
 
@@ -246,14 +271,11 @@ const AddCredits = async (req, res) => {
       })
       .end();
   } catch (error) {
-    console.log(error);
-    res
-      .send({
-        success: false,
-        message: error.message,
-        data: null,
-      })
-      .end();
+    res.send({
+      success: false,
+      message: error.message,
+      data: error,
+    });
   }
 };
 

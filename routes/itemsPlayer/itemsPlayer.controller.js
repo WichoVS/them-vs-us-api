@@ -186,7 +186,7 @@ const SetSelected = async (req, res) => {
     return res.send({
       success: true,
       message: "Item setted as Selected",
-      data: true,
+      data: itemToUpd,
     });
   } catch (error) {
     console.log(error);

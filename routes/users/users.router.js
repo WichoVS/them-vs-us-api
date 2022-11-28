@@ -11,7 +11,7 @@ const {
 } = require("./users.controller");
 
 Router.post("", CreateUser);
-Router.get("/:_id", GetUser);
+Router.get("", GetUser);
 Router.get("", GetAllUsers);
 Router.put("/:_id", UpdateUser);
 Router.patch("/:_id", ChangeStatusUser);
