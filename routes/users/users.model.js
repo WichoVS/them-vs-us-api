@@ -15,6 +15,11 @@ const UsersSchema = new mongoose.Schema(
       required: true,
       default: true,
     },
+    Credits: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   { versionKey: false }
 );

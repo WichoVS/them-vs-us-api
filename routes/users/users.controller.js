@@ -36,6 +36,22 @@ const CreateUser = async (req, res) => {
   try {
     const bdy = req.body;
 
+    console.log(bdy.Username, bdy.Password);
+
+    if (
+      bdy.Username === "" ||
+      bdy.Username === undefined ||
+      bdy.Password === "" ||
+      bdy.Password === undefined
+    )
+      return res
+        .send({
+          success: false,
+          message: "Username and Password are mandatory",
+          data: null,
+        })
+        .end();
+
     const user = await User.create({
       Username: bdy.Username,
       Password: bdy.Password,
@@ -58,6 +74,29 @@ const UpdateUser = async (req, res) => {
   try {
     const _idUser = req.params._id;
     const bdy = req.body;
+
+    if (_idUser === undefined || _idUser === "")
+      return res
+        .send({
+          success: false,
+          message: "Id User is Mandatory",
+          data: null,
+        })
+        .end();
+
+    if (
+      bdy.Username === undefined ||
+      bdy.Username === "" ||
+      bdy.Password === undefined ||
+      bdy.Password === ""
+    )
+      return res
+        .send({
+          success: false,
+          message: "Username and Password are mandatory",
+          data: null,
+        })
+        .end();
 
     const updUser = await User.findByIdAndUpdate(
       { _id: _idUser },
@@ -114,10 +153,113 @@ const ChangeStatusUser = async (req, res) => {
   }
 };
 
+const Login = async (req, res) => {
+  try {
+    const qry = req.query;
+
+    if (
+      qry.Username === "" ||
+      qry.Username === undefined ||
+      qry.Password === "" ||
+      qry.Password === undefined
+    )
+      return res
+        .send({
+          success: false,
+          message: "Username and Password are Mandatory",
+          data: null,
+        })
+        .end();
+
+    const user = await User.findOne({
+      Username: qry.Username,
+      Password: qry.Password,
+    })
+      .lean()
+      .exec();
+
+    if (user !== null) {
+      res
+        .send({
+          success: true,
+          message: "Login success!",
+          data: user,
+        })
+        .end();
+    } else {
+      res
+        .send({
+          success: false,
+          message: "Login failed",
+          data: user,
+        })
+        .end();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const AddCredits = async (req, res) => {
+  try {
+    const qry = req.query;
+
+    if (
+      qry.User === undefined ||
+      qry.User === "" ||
+      qry.Credits === undefined ||
+      qry.Credits === ""
+    )
+      return res
+        .send({
+          success: false,
+          message: "User and Credits to add are mandatory",
+          data: null,
+        })
+        .end();
+
+    const userToAdd = await User.findById({ _id: qry.User }).lean().exec();
+    if (userToAdd === null)
+      return res
+        .send({
+          success: false,
+          message: "User not found",
+          data: false,
+        })
+        .end();
+
+    const userUpdtd = await User.findByIdAndUpdate(
+      { _id: userToAdd._id },
+      {
+        Credits: userToAdd.Credits + parseInt(qry.Credits),
+      },
+      { new: true }
+    );
+
+    res
+      .send({
+        success: true,
+        message: "Credits added!",
+        data: userUpdtd,
+      })
+      .end();
+  } catch (error) {
+    console.log(error);
+    res
+      .send({
+        success: false,
+        message: error.message,
+        data: null,
+      })
+      .end();
+  }
+};
+
 module.exports = {
   GetAllUsers,
   GetUser,
   CreateUser,
   UpdateUser,
   ChangeStatusUser,
+  Login,
 };
